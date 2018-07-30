@@ -163,4 +163,20 @@ RSpec.describe 'Beers API', type: :request do
       end
     end
   end
+
+  describe 'DELETE /beers/:id' do
+    let!(:beer) { create(:beer) }
+
+    before do
+      delete "/v1/beers/#{beer.id}", params: {}, headers: headers
+    end
+
+    it 'returns status code 204' do
+      expect(response).to have_http_status(204)
+    end
+
+    it 'removes the beer from the database' do
+      expect { Beer.find(beer.id) }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
 end

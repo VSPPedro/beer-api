@@ -29,6 +29,12 @@ class Api::V1::BeersController < Api::V1::ApplicationController
     end
   end
 
+  def destroy
+    beer = Beer.find_by(id: params[:id])
+    beer.destroy
+    head 204
+  end
+
   private
 
   def beer_params
