@@ -122,4 +122,45 @@ RSpec.describe 'Beers API', type: :request do
       end
     end
   end
+
+  describe 'PUT /beers/:id' do
+    let!(:beer) { create(:beer_with_creators_and_tips_and_volumes) }
+
+    before do
+      put "/v1/beers/#{beer.id}", params: { beer: beer_params }.to_json,
+                                  headers: headers
+    end
+
+    context 'when the params are valid' do
+      let(:beer_params) { { name: 'New beer name' } }
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+
+      it 'returns the json for updated beer' do
+        expect(json_body[:name]).to eq(beer_params[:name])
+      end
+
+      it 'updates the beer in the database' do
+        expect(Beer.find_by(name: beer_params[:name])).not_to be_nil
+      end
+    end
+
+    context 'when the params are invalid' do
+      let(:beer_params){ { name: '' } }
+
+      it 'returns status code 422' do
+        expect(response).to have_http_status(422)
+      end
+
+      it 'returns the json error for name' do
+        expect(json_body[:errors]).to have_key(:name)
+      end
+
+      it 'does not update the beer in the database' do
+        expect(Beer.find_by(name: beer_params[:name])).to be_nil
+      end
+    end
+  end
 end
