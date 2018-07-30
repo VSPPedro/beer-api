@@ -37,4 +37,58 @@ RSpec.describe 'Beers API', type: :request do
       expect(json_body[:name]).to eq(beer.name)
     end
   end
+
+  describe 'POST /beers' do
+    before do
+      post '/v1/beers', params: { beer: beer_params }.to_json, headers: headers
+    end
+
+    context 'when the params are valid' do
+      let(:valid_beer) { attributes_for(:beer) }
+      let(:valid_creator1) { attributes_for(:creator) }
+      let(:valid_creator2) { attributes_for(:creator) }
+      let(:valid_tip1) { attributes_for(:tip) }
+      let(:valid_tip2) { attributes_for(:tip) }
+      let(:valid_volume1) { attributes_for(:volume) }
+      let(:valid_volume2) { attributes_for(:volume) }
+      let(:beer_params) do
+        {
+          name: valid_beer[:name],
+          description: valid_beer[:description],
+          fabrication: valid_beer[:fabrication],
+          creators_attributes: [valid_creator1, valid_creator2],
+          tips_attributes: [valid_tip1, valid_tip2],
+          volumes_attributes: [valid_volume1, valid_volume2]
+        }
+      end
+
+      it 'returns status code 201' do
+        expect(response).to have_http_status(201)
+      end
+
+      it 'saves the beer in the database' do
+        expect(Beer.find_by(name: beer_params[:name])).not_to be_nil
+      end
+
+      it 'returns the json for created beer' do
+        expect(json_body[:name]).to eq(beer_params[:name])
+      end
+    end
+
+    context 'when the params are invalid' do
+      let(:beer_params) { attributes_for(:beer, name: ' ') }
+
+      it 'returns status code 422' do
+        expect(response).to have_http_status(422)
+      end
+
+      it 'does not save the beer in the database' do
+        expect(Beer.find_by(name: beer_params[:name])).to be_nil
+      end
+
+      it 'returns the json error for title' do
+        expect(json_body[:errors]).to have_key(:name)
+      end
+    end
+  end
 end

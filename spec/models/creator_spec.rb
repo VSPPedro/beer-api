@@ -9,5 +9,4 @@ RSpec.describe Creator, type: :model do
   it { is_expected.to belong_to(:beer) }
   # Validation test
   it { should validate_presence_of(:name) }
-  it { should validate_presence_of(:beer_id) }
 end

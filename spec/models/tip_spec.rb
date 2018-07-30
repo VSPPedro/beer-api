@@ -9,5 +9,4 @@ RSpec.describe Tip, type: :model do
   it { is_expected.to belong_to(:beer) }
   # Validation test
   it { is_expected.to validate_presence_of(:description) }
-  it { is_expected.to validate_presence_of(:beer_id) }
 end
