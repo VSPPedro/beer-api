@@ -101,19 +101,11 @@ RSpec.describe 'Beers API', type: :request do
 
     context 'when the params are invalid' do
       let(:valid_beer) { attributes_for(:beer) }
-      let(:valid_creator1) { attributes_for(:creator) }
-      let(:valid_creator2) { attributes_for(:creator) }
-      let(:valid_tip1) { attributes_for(:tip) }
-      let(:valid_tip2) { attributes_for(:tip) }
-      let(:valid_volume1) { attributes_for(:volume) }
-      let(:valid_volume2) { attributes_for(:volume) }
       let(:beer_params) do
         {
           name: '', # Invalid name
           description: valid_beer[:description],
-          fabrication: valid_beer[:fabrication],
-          creators: [valid_creator1, valid_creator2],
-          volumes: [valid_volume1, valid_volume2]
+          fabrication: valid_beer[:fabrication]
         }
       end
 
