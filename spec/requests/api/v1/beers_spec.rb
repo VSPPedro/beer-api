@@ -48,6 +48,18 @@ RSpec.describe 'Beers API', type: :request do
     it 'returns the json for beer' do
       expect(json_body[:name]).to eq(beer.name)
     end
+
+    it 'returns beers creators' do
+      expect(json_body[:creators]).not_to be_empty
+    end
+
+    it 'returns beers tips' do
+      expect(json_body[:tips]).not_to be_empty
+    end
+
+    it 'returns beers volumes' do
+      expect(json_body[:volumes]).not_to be_empty
+    end
   end
 
   describe 'POST /beers' do
