@@ -5,3 +5,7 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+require 'factory_bot_rails'
+require 'faker'
+
+FactoryBot.create_list(:beer_with_creators_and_tips_and_volumes, 20)
