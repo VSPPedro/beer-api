@@ -4,13 +4,16 @@ FactoryBot.define do
     description { Faker::Lorem.sentence }
     fabrication { Faker::Date.backward(5000) }
 
-    factory :beer_with_creators do
-      transient do
-        creators_count 3
+    factory :beer_with_creators_and_tips do
+      after :create do |beer|
+        create_list :creator, 3, beer: beer
+        create_list :tip, 3, beer: beer
       end
 
-      after(:attributes_for) do |beer, evaluator|
-        create_list(:creator, evaluator.creators_count, beer: beer)
+      factory :beer_with_creators_and_tips_and_volumes do
+        after(:create) do |beer|
+          beer.volumes = create_list(:volume, 3)
+        end
       end
     end
   end

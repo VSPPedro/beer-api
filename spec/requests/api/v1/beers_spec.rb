@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe 'Beers API', type: :request do
   before { host! 'api.fractal.test' }
 
-  let!(:beers) { create_list(:beer, 10) }
+  let!(:beers) { create_list(:beer_with_creators_and_tips_and_volumes, 10) }
   let(:beer) { beers.first }
   let(:beer_id) { beer.id }
   let(:headers) do
@@ -23,6 +23,18 @@ RSpec.describe 'Beers API', type: :request do
 
     it 'returns status code 200' do
       expect(response).to have_http_status(200)
+    end
+
+    it 'returns beers creators' do
+      expect(json_body[0][:creators]).not_to be_empty
+    end
+
+    it 'returns beers tips' do
+      expect(json_body[0][:tips]).not_to be_empty
+    end
+
+    it 'returns beers volumes' do
+      expect(json_body[0][:volumes]).not_to be_empty
     end
   end
 
@@ -56,9 +68,9 @@ RSpec.describe 'Beers API', type: :request do
           name: valid_beer[:name],
           description: valid_beer[:description],
           fabrication: valid_beer[:fabrication],
-          creators_attributes: [valid_creator1, valid_creator2],
-          tips_attributes: [valid_tip1, valid_tip2],
-          volumes_attributes: [valid_volume1, valid_volume2]
+          creators: [valid_creator1, valid_creator2],
+          tips: [valid_tip1, valid_tip2],
+          volumes: [valid_volume1, valid_volume2]
         }
       end
 
@@ -76,7 +88,22 @@ RSpec.describe 'Beers API', type: :request do
     end
 
     context 'when the params are invalid' do
-      let(:beer_params) { attributes_for(:beer, name: ' ') }
+      let(:valid_beer) { attributes_for(:beer) }
+      let(:valid_creator1) { attributes_for(:creator) }
+      let(:valid_creator2) { attributes_for(:creator) }
+      let(:valid_tip1) { attributes_for(:tip) }
+      let(:valid_tip2) { attributes_for(:tip) }
+      let(:valid_volume1) { attributes_for(:volume) }
+      let(:valid_volume2) { attributes_for(:volume) }
+      let(:beer_params) do
+        {
+          name: '', # Invalid name
+          description: valid_beer[:description],
+          fabrication: valid_beer[:fabrication],
+          creators: [valid_creator1, valid_creator2],
+          volumes: [valid_volume1, valid_volume2]
+        }
+      end
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
