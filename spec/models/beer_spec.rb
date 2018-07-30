@@ -9,6 +9,7 @@ RSpec.describe Beer, type: :model do
   # Association test
   it { is_expected.to have_many(:creators) }
   it { is_expected.to have_many(:tips) }
+  it { is_expected.to have_many(:volumes) }
   # Validation test
   it { should validate_presence_of(:name) }
 end
