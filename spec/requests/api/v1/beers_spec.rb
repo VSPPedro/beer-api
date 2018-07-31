@@ -14,27 +14,35 @@ RSpec.describe 'Beers API', type: :request do
   end
 
   describe 'GET /beers' do
-    before { get '/v1/beers/', params: {}, headers: headers }
+    context 'when no param is sent' do
+      before { get '/v1/beers/', params: {}, headers: headers }
 
-    it 'returns beers' do
-      expect(json_body).not_to be_empty
-      expect(json_body.size).to eq(10)
+      it 'returns beers' do
+        expect(json_body).not_to be_empty
+        expect(json_body.size).to eq(10)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
     end
 
-    it 'returns status code 200' do
-      expect(response).to have_http_status(200)
-    end
+    context 'when param is sent' do
+      let!(:beer1) { create(:beer, name: 'New beer 1') }
+      let!(:beer2) { create(:beer, name: 'New beer 2') }
+      let!(:beer3) { create(:beer, name: 'No alcool 1') }
+      let!(:beer4) { create(:beer, name: 'No alcool 2') }
 
-    it 'returns beers creators' do
-      expect(json_body[0][:creators]).not_to be_empty
-    end
+      before { get '/v1/beers?q=beer', params: {}, headers: headers }
 
-    it 'returns beers tips' do
-      expect(json_body[0][:tips]).not_to be_empty
-    end
+      it 'returns beers' do
+        expect(json_body).not_to be_empty
+        expect(json_body.size).to eq(2)
+      end
 
-    it 'returns beers volumes' do
-      expect(json_body[0][:volumes]).not_to be_empty
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
     end
   end
 
