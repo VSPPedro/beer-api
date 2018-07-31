@@ -1,6 +1,6 @@
 class Api::V1::BeersController < Api::V1::ApplicationController
   def index
-    beers = Beer.all
+    beers = Beer.ransack(name_cont: params[:q]).result
     render json: beers, status: 200
   end
 
