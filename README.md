@@ -19,7 +19,17 @@ $ rails db:setup
 $ bundle exec rspec
 ```
 
+* How to configure the subdomain:
+```sh
+$ sudo nano /etc/hosts
+```
+After that add at the end of the file:
+```sh
+127.0.0.1 api.beer.test
+```
+
 * Start project: 
 ```sh
 $ rails s
 ```
+Now you can acess the endpoint beers using: api.beer.test:3000/v1/beers
