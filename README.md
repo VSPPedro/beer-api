@@ -1,24 +1,35 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+About the project:
 
-Things you may want to cover:
+* Ruby version: 2.5.1
 
-* Ruby version
+* Install dependencies: 
+```sh
+$ bundle install
+```
 
-* System dependencies
+* Database initialization: 
+```sh
+$ rails db:setup
+```
 
-* Configuration
+* How to run the tests: 
+```sh
+$ bundle exec rspec
+```
 
-* Database creation
+* How to configure the subdomain:
+```sh
+$ sudo nano /etc/hosts
+```
+After that add at the end of the file:
+```sh
+127.0.0.1 api.beer.test
+```
 
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+* Start project: 
+```sh
+$ rails s
+```
+Now you can acess the endpoint beers using: api.beer.test:3000/v1/beers
