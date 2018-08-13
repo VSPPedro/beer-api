@@ -97,7 +97,7 @@ RSpec.describe 'Beers API', type: :request do
       let(:valid_volume2) { attributes_for(:volume) }
       let(:beer_params) do
         {
-          name: valid_beer[:name],
+          name: "New #{valid_beer[:name]}", # Making the name unique
           description: valid_beer[:description],
           fabrication: valid_beer[:fabrication],
           creators_attributes: [valid_creator1, valid_creator2],
@@ -125,7 +125,7 @@ RSpec.describe 'Beers API', type: :request do
       end
 
       it 'saves the volumes in the database' do
-        volumes_count = Beer.find_by(name: beer_params[:name]).volumes.all.count
+        volumes_count = Beer.find_by(name: beer_params[:name]).volumes.count
         expect(volumes_count).to eq(2)
       end
 
