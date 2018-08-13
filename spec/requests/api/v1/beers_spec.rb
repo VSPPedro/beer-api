@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe 'Beers API', type: :request do
   before { host! 'api.fractal.test' }
 
-  let!(:beers) { create_list(:beer_with_creators_and_tips_and_volumes, 10) }
+  let!(:beers) { create_list(:beer_with_creators_and_tips_and_volumes, 3) }
   let(:beer) { beers.first }
   let(:beer_id) { beer.id }
   let(:headers) do
@@ -18,7 +18,7 @@ RSpec.describe 'Beers API', type: :request do
 
       it 'returns beers' do
         expect(json_body).not_to be_empty
-        expect(json_body.size).to eq(10)
+        expect(json_body.size).to eq(3)
       end
 
       it 'returns status code 200' do
@@ -46,24 +46,39 @@ RSpec.describe 'Beers API', type: :request do
   describe 'GET /beers/:id' do
     before { get "/v1/beers/#{beer_id}", params: {}, headers: headers }
 
-    it 'returns status code 200' do
-      expect(response).to have_http_status(200)
+    context 'when there is a beer' do
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+
+      it 'returns the json for beer' do
+        expect(json_body[:name]).to eq(beer.name)
+      end
+
+      it 'returns beers creators' do
+        expect(json_body[:creators]).not_to be_empty
+      end
+
+      it 'returns beers tips' do
+        expect(json_body[:tips]).not_to be_empty
+      end
+
+      it 'returns beers volumes' do
+        expect(json_body[:volumes]).not_to be_empty
+      end
     end
 
-    it 'returns the json for beer' do
-      expect(json_body[:name]).to eq(beer.name)
-    end
+    context 'when beer does not exist' do
+      let(:beer_id) { 0 }
 
-    it 'returns beers creators' do
-      expect(json_body[:creators]).not_to be_empty
-    end
+      it 'returns status code 404' do
+        expect(response).to have_http_status(:not_found)
+      end
 
-    it 'returns beers tips' do
-      expect(json_body[:tips]).not_to be_empty
-    end
-
-    it 'returns beers volumes' do
-      expect(json_body[:volumes]).not_to be_empty
+      it 'returns a not found message' do
+        message = /Couldn't find Beer/
+        expect(json_body[:message]).to match(message)
+      end
     end
   end
 
@@ -85,9 +100,9 @@ RSpec.describe 'Beers API', type: :request do
           name: valid_beer[:name],
           description: valid_beer[:description],
           fabrication: valid_beer[:fabrication],
-          creators: [valid_creator1, valid_creator2],
-          tips: [valid_tip1, valid_tip2],
-          volumes: [valid_volume1, valid_volume2]
+          creators_attributes: [valid_creator1, valid_creator2],
+          tips_attributes: [valid_tip1, valid_tip2],
+          volumes_attributes: [valid_volume1, valid_volume2]
         }
       end
 
@@ -97,6 +112,21 @@ RSpec.describe 'Beers API', type: :request do
 
       it 'saves the beer in the database' do
         expect(Beer.find_by(name: beer_params[:name])).not_to be_nil
+      end
+
+      it 'saves the creators in the database' do
+        creators_count = Beer.find_by(name: beer_params[:name]).creators.count
+        expect(creators_count).to eq(2)
+      end
+
+      it 'saves the tips in the database' do
+        tips_count = Beer.find_by(name: beer_params[:name]).tips.count
+        expect(tips_count).to eq(2)
+      end
+
+      it 'saves the volumes in the database' do
+        volumes_count = Beer.find_by(name: beer_params[:name]).volumes.all.count
+        expect(volumes_count).to eq(2)
       end
 
       it 'returns the json for created beer' do
