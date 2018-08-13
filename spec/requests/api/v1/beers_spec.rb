@@ -8,8 +8,7 @@ RSpec.describe 'Beers API', type: :request do
   let(:beer_id) { beer.id }
   let(:headers) do
     {
-      'Content-Type' => Mime[:json].to_s,
-      'Accept' => 'application/api.fractal.v1'
+      'Content-Type' => Mime[:json].to_s
     }
   end
 
