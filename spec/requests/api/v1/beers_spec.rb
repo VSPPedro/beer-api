@@ -28,12 +28,10 @@ RSpec.describe 'Beers API', type: :request do
     end
 
     context 'when param is sent' do
-      let!(:beer1) { create(:beer, name: 'New beer 1') }
-      let!(:beer2) { create(:beer, name: 'New beer 2') }
-      let!(:beer3) { create(:beer, name: 'No alcool 1') }
-      let!(:beer4) { create(:beer, name: 'No alcool 2') }
+      let!(:beer1) { create(:beer, name: 'New b33r 1') }
+      let!(:beer2) { create(:beer, name: 'New b33r 2') }
 
-      before { get '/v1/beers?q=beer', params: {}, headers: headers }
+      before { get '/v1/beers?q[name_cont]=b33r', params: {}, headers: headers }
 
       it 'returns beers' do
         expect(json_body).not_to be_empty
