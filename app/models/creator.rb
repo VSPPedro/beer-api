@@ -1,4 +1,4 @@
 class Creator < ApplicationRecord
   belongs_to :beer
-  validates_presence_of :name
+  validates :name, presence: true
 end
