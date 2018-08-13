@@ -38,24 +38,11 @@ class Api::V1::BeersController < Api::V1::ApplicationController
   private
 
   def beer_params
-    beer_params = params.require(:beer).permit(:name,
-                                               :description,
-                                               :fabrication,
-                                               creators: %i[id name],
-                                               tips: %i[id description],
-                                               volumes: %i[id value unit])
-    # Making possible that the application accept JSON without the '_attributes'
-    # for nested fields. The conditions below are required because these keys
-    # are not necessary for a post/put action.
-    if beer_params[:tips]
-      beer_params[:tips_attributes] = beer_params.delete :tips
-    end
-    if beer_params[:creators]
-      beer_params[:creators_attributes] = beer_params.delete :creators
-    end
-    if beer_params[:volumes]
-      beer_params[:volumes_attributes] = beer_params.delete :volumes
-    end
-    beer_params.permit!
+    params.require(:beer).permit(:name,
+                                 :description,
+                                 :fabrication,
+                                 creators_attributes: %i[id name],
+                                 tips_attributes: %i[id description],
+                                 volumes_attributes: %i[id value unit])
   end
 end
