@@ -32,4 +32,4 @@ After that add at the end of the file:
 ```sh
 $ rails s
 ```
-Now you can acess the endpoint beers using: api.beer.test:3000/v1/beers
+Now you can access the endpoint beers using: api.beer.test:3000/v1/beers
