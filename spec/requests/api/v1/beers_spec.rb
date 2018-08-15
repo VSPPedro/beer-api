@@ -12,13 +12,12 @@ RSpec.describe 'Beers API', type: :request do
     }
   end
 
-  describe 'GET /beers' do
+  describe 'GET /v1/beers' do
     context 'when no param is sent' do
       before { get '/v1/beers/', params: {}, headers: headers }
 
       it 'returns beers' do
-        expect(json_body).not_to be_empty
-        expect(json_body.size).to eq(3)
+        expect(json_body[:data].size).to eq(3)
       end
 
       it 'returns status code 200' do
@@ -33,8 +32,7 @@ RSpec.describe 'Beers API', type: :request do
       before { get '/v1/beers?q[name_cont]=b33r', params: {}, headers: headers }
 
       it 'returns beers' do
-        expect(json_body).not_to be_empty
-        expect(json_body.size).to eq(2)
+        expect(json_body[:data].size).to eq(2)
       end
 
       it 'returns status code 200' do
@@ -43,28 +41,28 @@ RSpec.describe 'Beers API', type: :request do
     end
   end
 
-  describe 'GET /beers/:id' do
+  describe 'GET /v1/beers/:id' do
     before { get "/v1/beers/#{beer_id}", params: {}, headers: headers }
 
     context 'when there is a beer' do
       it 'returns status code 200' do
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(:ok)
       end
 
-      it 'returns the json for beer' do
-        expect(json_body[:name]).to eq(beer.name)
+      it 'returns the json with beer name' do
+        expect(json_body[:data][:attributes][:name]).to eq(beer.name)
       end
 
       it 'returns beers creators' do
-        expect(json_body[:creators]).not_to be_empty
+        expect(json_body[:data][:relationships][:creators]).not_to be_empty
       end
 
       it 'returns beers tips' do
-        expect(json_body[:tips]).not_to be_empty
+        expect(json_body[:data][:relationships][:tips]).not_to be_empty
       end
 
       it 'returns beers volumes' do
-        expect(json_body[:volumes]).not_to be_empty
+        expect(json_body[:data][:relationships][:volumes]).not_to be_empty
       end
     end
 
@@ -82,7 +80,7 @@ RSpec.describe 'Beers API', type: :request do
     end
   end
 
-  describe 'POST /beers' do
+  describe 'POST /v1/beers' do
     before do
       post '/v1/beers', params: { beer: beer_params }.to_json, headers: headers
     end
@@ -107,7 +105,7 @@ RSpec.describe 'Beers API', type: :request do
       end
 
       it 'returns status code 201' do
-        expect(response).to have_http_status(201)
+        expect(response).to have_http_status(:created)
       end
 
       it 'saves the beer in the database' do
@@ -130,7 +128,7 @@ RSpec.describe 'Beers API', type: :request do
       end
 
       it 'returns the json for created beer' do
-        expect(json_body[:name]).to eq(beer_params[:name])
+        expect(json_body[:data][:attributes][:name]).to eq(beer_params[:name])
       end
     end
 
@@ -158,7 +156,7 @@ RSpec.describe 'Beers API', type: :request do
     end
   end
 
-  describe 'PUT /beers/:id' do
+  describe 'PUT /v1/beers/:id' do
     let!(:beer) { create(:beer_with_creators_and_tips_and_volumes) }
 
     before do
@@ -174,7 +172,7 @@ RSpec.describe 'Beers API', type: :request do
       end
 
       it 'returns the json for updated beer' do
-        expect(json_body[:name]).to eq(beer_params[:name])
+        expect(json_body[:data][:attributes][:name]).to eq(beer_params[:name])
       end
 
       it 'updates the beer in the database' do
@@ -199,7 +197,7 @@ RSpec.describe 'Beers API', type: :request do
     end
   end
 
-  describe 'DELETE /beers/:id' do
+  describe 'DELETE /v1/beers/:id' do
     let!(:beer) { create(:beer) }
 
     before do

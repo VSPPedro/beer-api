@@ -6,7 +6,7 @@ class Api::V1::BeersController < Api::V1::ApplicationController
 
   def show
     beer = Beer.find(params[:id])
-    render json: beer, status: :ok
+    render json: beer, include: %w[creators tips volumes], status: :ok
   end
 
   def create
