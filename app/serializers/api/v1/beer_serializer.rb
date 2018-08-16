@@ -1,4 +1,5 @@
-class Api::V1::BeerSerializer < ActiveModel::Serializer
+class Api::V1::BeerSerializer
+  include FastJsonapi::ObjectSerializer
   attributes :id, :name, :description, :fabrication
   has_many :tips
   has_many :creators

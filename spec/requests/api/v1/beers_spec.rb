@@ -17,6 +17,7 @@ RSpec.describe 'Beers API', type: :request do
       before { get '/v1/beers/', params: {}, headers: headers }
 
       it 'returns beers' do
+        puts json_body
         expect(json_body[:data].size).to eq(3)
       end
 

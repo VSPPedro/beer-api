@@ -1,19 +1,24 @@
 class Api::V1::BeersController < Api::V1::ApplicationController
   def index
     beers = Beer.ransack(params[:q]).result
-    render json: beers, status: :ok
+    render json: Api::V1::BeerSerializer.new(beers).serializable_hash,
+           status: :ok
   end
 
   def show
     beer = Beer.find(params[:id])
-    render json: beer, include: %w[creators tips volumes], status: :ok
+    options = {}
+    options[:include] = %i[creators tips volumes]
+    render json: Api::V1::BeerSerializer.new(beer, options).serializable_hash,
+           status: :ok
   end
 
   def create
     beer = Beer.new(beer_params)
 
     if beer.save
-      render json: beer, status: :created
+      render json: Api::V1::BeerSerializer.new(beer).serializable_hash,
+             status: :created
     else
       render json: { errors: beer.errors }, status: :unprocessable_entity
     end
@@ -23,7 +28,8 @@ class Api::V1::BeersController < Api::V1::ApplicationController
     beer = Beer.find_by(id: params[:id])
 
     if beer.update_attributes(beer_params)
-      render json: beer, status: :ok
+      render json: Api::V1::BeerSerializer.new(beer).serializable_hash,
+             status: :ok
     else
       render json: { errors: beer.errors }, status: :unprocessable_entity
     end
